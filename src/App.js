@@ -1,15 +1,20 @@
+
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Header from "./component/Header";
 import ForgotPassword from "./pages/ForgotPassword";
 import Home from "./pages/Home";
+import NoPage from "./pages/NoPage";
 import Offers from "./pages/Offers";
 import Profile from "./pages/Profile";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 
+
 function App() {
   return (
     <>
       <Router>
+        <Header />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/offers" element={<Offers />} />
@@ -17,6 +22,7 @@ function App() {
           <Route path="/sign-up" element={<SignUp />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="*" element={<NoPage />} />
         </Routes>
       </Router>
     </>

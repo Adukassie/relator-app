@@ -1,21 +1,57 @@
-import React, { useState } from "react";
+import {
+  createUserWithEmailAndPassword,
+  getAuth,
+  updateProfile,
+} from "firebase/auth";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
+import { useState } from "react";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import OAuth from "../component/OAuth";
 
-function SignUp() {
-  const [showPassword, setShowPassword] = useState();
+import { db } from "../firebase";
+
+export default function SignUp() {
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
   });
-  const {name, email, password } = formData;
+  const { name, email, password } = formData;
+  const navigate = useNavigate();
+
   function onChange(e) {
     setFormData((prevState) => ({
       ...prevState,
       [e.target.id]: e.target.value,
     }));
+  }
+  async function onSubmit(e) {
+    e.preventDefault();
+    try {
+      const auth = getAuth();
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      updateProfile(auth.currentUser, {
+        displayName: name,
+      });
+      const user = userCredential.user;
+      const formDataCopy = { ...formData };
+      delete formDataCopy.password;
+      formDataCopy.timestamp = serverTimestamp();
+
+      await setDoc(doc(db, "users", user.uid), formDataCopy);
+      toast.success("Sign up was successful");
+      navigate("/");
+      // console.log(user);
+    } catch (error) {
+      toast.error("Something went wrong with the registration");
+    }
   }
   return (
     <section>
@@ -30,7 +66,7 @@ function SignUp() {
         </div>
         <div className="w-full md:w-[67%] lg:w-[40%] lg:ml-20">
           {/* onSubmit={onSubmit} */}
-          <form>
+          <form onSubmit={onSubmit}>
             <input
               type="text"
               id="name"
@@ -105,4 +141,4 @@ function SignUp() {
   );
 }
 
-export default SignUp;
+// export default SignUp;

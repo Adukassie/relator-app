@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import OAuth from "../component/OAuth";
 
 function ForgotPassword() {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
 
   function onChange(e) {
     setEmail(e.target.value);
@@ -34,7 +34,7 @@ function ForgotPassword() {
 
             <div className="flex justify-between whitespace-nowrap text-sm sm:text-lg">
               <p className="mb-6">
-                Don't have a account?
+                Have a account?
                 <Link
                   to="/sign-up"
                   className="text-red-600 hover:text-red-700 transition duration-200 ease-in-out ml-1"
@@ -44,10 +44,10 @@ function ForgotPassword() {
               </p>
               <p>
                 <Link
-                  to="/forgot-password"
+                  to="/sign-in"
                   className="text-blue-600 hover:text-blue-800 transition duration-200 ease-in-out"
                 >
-                  Forgot password?
+                  sign in instead
                 </Link>
               </p>
             </div>

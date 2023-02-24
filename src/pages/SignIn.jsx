@@ -1,3 +1,5 @@
+import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+// import { db } from "../firebase";
 import React, { useState } from "react";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 import { Link } from "react-router-dom";
@@ -16,6 +18,21 @@ function SignIn() {
       [e.target.id]: e.target.value,
     }));
   }
+  async function onSubmit(e) {
+    e.preventDefault();
+    try {
+      const auth = getAuth();
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userCredential.user();
+      console.log(user);
+    } catch (error) {
+      console.log("error");
+    }
+  }
   return (
     <section>
       <h1 className="text-3xl text-center mt-6 font-bold">Sign In</h1>
@@ -28,8 +45,7 @@ function SignIn() {
           />
         </div>
         <div className="w-full md:w-[67%] lg:w-[40%] lg:ml-20">
-          {/* onSubmit={onSubmit} */}
-          <form>
+          <form onSubmit={onSubmit}>
             <input
               type="email"
               id="email"
@@ -72,10 +88,10 @@ function SignIn() {
               </p>
               <p>
                 <Link
-                  to="/sign-in"
+                  to="/forgot-password"
                   className="text-blue-600 hover:text-blue-800 transition duration-200 ease-in-out"
                 >
-                  sign in instead?
+                  Forgot password?
                 </Link>
               </p>
             </div>

@@ -1,8 +1,9 @@
-import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import { createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword } from "firebase/auth";
 // import { db } from "../firebase";
 import React, { useState } from "react";
 import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import OAuth from "../component/OAuth";
 
 function SignIn() {
@@ -12,6 +13,9 @@ function SignIn() {
     password: "",
   });
   const { email, password } = formData;
+  const navigate = useNavigate();
+
+
   function onChange(e) {
     setFormData((prevState) => ({
       ...prevState,
@@ -22,15 +26,17 @@ function SignIn() {
     e.preventDefault();
     try {
       const auth = getAuth();
-      const userCredential = await createUserWithEmailAndPassword(
+      const userCredential = await signInWithEmailAndPassword(
         auth,
         email,
         password
       );
-      const user = userCredential.user();
-      console.log(user);
+
+      if (userCredential.user) {
+        navigate("/");
+      }
     } catch (error) {
-      console.log("error");
+      toast.error("Bad user credentials");
     }
   }
   return (

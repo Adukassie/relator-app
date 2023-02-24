@@ -1,4 +1,9 @@
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  FacebookAuthProvider,
+} from "firebase/auth";
 import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import { FcGoogle } from "react-icons/fc";
 import { toast } from "react-toastify";
@@ -8,6 +13,35 @@ import { FaFacebook } from "react-icons/fa";
 
 function OAuth() {
   const navigate = useNavigate();
+  //facebook
+  async function onFacebookClick() {
+  
+    try {
+      const auth = getAuth();
+       const provider = new FacebookAuthProvider();
+
+      const result = await signInWithPopup(auth, provider);
+      let user = result.user;
+
+       console.log(user);
+      //  1st check for the user
+      const docRef = doc(db, "users", user.uid); //address
+      const docSnap = await getDoc(docRef); //promise
+
+      if (!docSnap.exists()) {
+        await setDoc(docRef, {
+          name: user.displayName,
+          email: user.email,
+          timestamp: serverTimestamp(),
+        });
+      }
+      navigate("/");
+    } catch (error) {
+      toast.error("Could not authorize with Google");
+    }
+   
+  }
+  //Google
   async function onGoogleClick() {
     try {
       const auth = getAuth();
@@ -15,6 +49,7 @@ function OAuth() {
 
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
+
       // console.log(user);
       //  1st check for the user
       const docRef = doc(db, "users", user.uid); //address
@@ -27,7 +62,7 @@ function OAuth() {
           timestamp: serverTimestamp(),
         });
       }
-         navigate("/");
+      navigate("/");
     } catch (error) {
       toast.error("Could not authorize with Google");
     }
@@ -59,6 +94,8 @@ function OAuth() {
         Continue with Google
       </button>
       <button
+        type="button"
+        onClick={onFacebookClick}
         className="flex items-center
      justify-center w-full
      bg-blue-600 
@@ -78,8 +115,7 @@ function OAuth() {
           className="text-2xl 
        rounded-full mr-12"
         />
-        <a href={"https://www.facebook.com/"}>Continue with Facebook</a>
-        {/* Continue with Facebook */}
+        Continue with Facebook
       </button>
     </>
   );

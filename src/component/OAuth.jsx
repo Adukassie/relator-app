@@ -8,38 +8,38 @@ import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import { FcGoogle } from "react-icons/fc";
 import { toast } from "react-toastify";
 import { db } from "../firebase";
-import { Link, useNavigate } from "react-router-dom";
+//import { Link, useNavigate } from "react-router-dom";
 import { FaFacebook } from "react-icons/fa";
+import { useNavigate } from "react-router";
 
 function OAuth() {
   const navigate = useNavigate();
   //facebook
   async function onFacebookClick() {
-  
-    try {
-      const auth = getAuth();
-       const provider = new FacebookAuthProvider();
 
-      const result = await signInWithPopup(auth, provider);
-      let user = result.user;
+   try {
+        const auth = getAuth();
+        const provider = new FacebookAuthProvider();
 
-       console.log(user);
-      //  1st check for the user
-      const docRef = doc(db, "users", user.uid); //address
-      const docSnap = await getDoc(docRef); //promise
+     const result = await signInWithPopup(auth, provider);
+     const user = result.user;
 
-      if (!docSnap.exists()) {
-        await setDoc(docRef, {
-          name: user.displayName,
-          email: user.email,
-          timestamp: serverTimestamp(),
-        });
-      }
-      navigate("/");
-    } catch (error) {
-      toast.error("Could not authorize with Google");
-    }
-   
+      console.log(user);
+     //  1st check for the user
+    //  const docRef = doc(db, "users", user.uid); //address
+    //  const docSnap = await getDoc(docRef); //promise
+
+    //  if (!docSnap.exists()) {
+    //    await setDoc(docRef, {
+    //      name: user.displayName,
+    //      email: user.email,
+    //      timestamp: serverTimestamp(),
+    //    });
+    //  }
+    //  navigate("/");
+   } catch (error) {
+     toast.error("Could not authorize with Facebook");
+   }
   }
   //Google
   async function onGoogleClick() {
@@ -50,12 +50,12 @@ function OAuth() {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
 
-      // console.log(user);
+      console.log(user);
       //  1st check for the user
       const docRef = doc(db, "users", user.uid); //address
       const docSnap = await getDoc(docRef); //promise
 
-      if (!docSnap.exists()) {
+      if (!docSnap.exists()) {  
         await setDoc(docRef, {
           name: user.displayName,
           email: user.email,

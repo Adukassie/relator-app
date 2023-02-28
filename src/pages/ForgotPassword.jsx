@@ -1,6 +1,7 @@
-import React, { useState } from "react";
-
+import { getAuth, sendPasswordResetEmail } from "firebase/auth";
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import OAuth from "../component/OAuth";
 
 function ForgotPassword() {
@@ -9,9 +10,20 @@ function ForgotPassword() {
   function onChange(e) {
     setEmail(e.target.value);
   }
+
+  async function onSubmit(e) {
+    e.preventDefault();
+    try {
+      const auth = getAuth();
+      await sendPasswordResetEmail(auth, email);
+      toast.success("Email was sent");
+    } catch (error) {
+      toast.error("Could not send reset password");
+    }
+  }
   return (
     <section>
-      <h1 className="text-3xl text-center mt-6 font-bold">ForgotPassword</h1>
+      <h1 className="text-3xl text-center mt-6 font-bold">Forgot Password</h1>
       <div className="flex justify-center flex-wrap items-center px-6 py-12 max-w-6xl mx-auto">
         <div className="md:w-[67%] lg:w-[50%] mb-12 md:mb-6">
           <img
@@ -21,8 +33,7 @@ function ForgotPassword() {
           />
         </div>
         <div className="w-full md:w-[67%] lg:w-[40%] lg:ml-20">
-          {/* onSubmit={onSubmit} */}
-          <form>
+          <form onSubmit={onSubmit}>
             <input
               type="email"
               id="email"
@@ -34,7 +45,7 @@ function ForgotPassword() {
 
             <div className="flex justify-between whitespace-nowrap text-sm sm:text-lg">
               <p className="mb-6">
-                Have a account?
+                Don't have a account?
                 <Link
                   to="/sign-up"
                   className="text-red-600 hover:text-red-700 transition duration-200 ease-in-out ml-1"
@@ -47,12 +58,12 @@ function ForgotPassword() {
                   to="/sign-in"
                   className="text-blue-600 hover:text-blue-800 transition duration-200 ease-in-out"
                 >
-                  sign in instead
+                  Sign in instead
                 </Link>
               </p>
             </div>
             <button
-              className="w-full bg-red-600 text-white px-7 py-3 text-m font-medium  rounded-[20px] shadow-md hover:bg-red-700 transition duration-150 ease-in-out hover:shadow-lg active:bg-blue-800"
+              className="w-full bg-blue-600 text-white px-7 py-3 text-sm font-medium uppercase rounded shadow-md hover:bg-blue-700 transition duration-150 ease-in-out hover:shadow-lg active:bg-blue-800"
               type="submit"
             >
               Send reset password
